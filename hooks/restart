@@ -1,4 +1,0 @@
-#!/bin/bash -l
-
-circusctl stop
-circusctl start
