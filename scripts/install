@@ -1,0 +1,15 @@
+#!/bin/bash -el
+
+# do not remove, circus is needed to manage application processes
+# and its environment variables
+#apt-get update
+#apt-get install git-core openssh-server python-pip python-yaml libzmq-dev g++ python-dev -y
+#pip install git+https://github.com/andrewsmedina/circus.git@validate_option_hooks
+apt-get update
+apt-get -y install python-software-properties git-core openssh-server python-pip python-yaml python-dev
+add-apt-repository -y ppa:roman-imankulov/circus
+apt-get update
+apt-get install -y circus
+pip install tsuru-circus
+mkdir /var/run/sshd
+echo "export DEBIAN_FRONTEND=noninteractive" >> /etc/profile
