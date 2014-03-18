@@ -15,9 +15,5 @@ ADD scripts/deploy  /var/lib/tsuru/base/deploy
 ADD scripts/restart /var/lib/tsuru/base/restart
 ADD scripts/start   /var/lib/tsuru/base/start
 
-RUN ln -s /var/lib/tsuru/base/deploy  /var/lib/tsuru/deploy
-RUN ln -s /var/lib/tsuru/base/restart /var/lib/tsuru/restart
-RUN ln -s /var/lib/tsuru/base/start   /var/lib/tsuru/start
-
 RUN /var/lib/tsuru/base/install
 RUN /var/lib/tsuru/base/setup
