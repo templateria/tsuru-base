@@ -1,11 +1,7 @@
 #!/bin/bash -el
 
-SOURCE_DIR=/var/lib/tsuru
-source ${SOURCE_DIR}/config
-
-mkdir -p /etc/circus
-cp ${SOURCE_DIR}/utils/circus.ini /etc/circus/circus.ini
+echo "export DEBIAN_FRONTEND=noninteractive" >> /etc/profile
 mkdir /home/application
-useradd -m ${USER} -s /bin/bash
-chown ${USER}:${USER} /home/application
+useradd -m ubuntu -s /bin/bash
+chown ubuntu:ubuntu /home/application
 echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers

@@ -1,15 +1,40 @@
 #!/bin/bash -el
-
-# do not remove, circus is needed to manage application processes
-# and its environment variables
-#apt-get update
-#apt-get install git-core openssh-server python-pip python-yaml libzmq-dev g++ python-dev -y
-#pip install git+https://github.com/andrewsmedina/circus.git@validate_option_hooks
 apt-get update
 apt-get -y install python-software-properties git-core openssh-server python-pip python-yaml python-dev
 add-apt-repository -y ppa:roman-imankulov/circus
 apt-get update
 apt-get install -y circus
 pip install tsuru-circus
-mkdir /var/run/sshd
-echo "export DEBIAN_FRONTEND=noninteractive" >> /etc/profile
+cat > /etc/circus/circusd.ini <<CIRCUS
+[circus]
+check_delay = 5
+debug = True
+endpoint = tcp://127.0.0.1:5555
+pubsub_endpoint = tcp://127.0.0.1:5556
+include_dir = /etc/circus/conf.d
+
+[plugin:procfile_watcher]
+use = tsuru.plugins.ProcfileWatcher
+
+[plugin:apprc_watcher]
+use = tsuru.plugins.ApprcWatcher
+
+[watcher:tsuru-hooks]
+copy_env = True
+working_dir = /home/application/current
+cmd = "tail -f /dev/null"
+shell = True
+stdout_stream.class = tsuru.stream.Stream
+stderr_stream.class = tsuru.stream.Stream
+hooks.before_start = tsuru.hooks.before_start
+hooks.after_start = tsuru.hooks.after_start
+priority = 1
+respawn = False
+uid = ubuntu
+
+[plugin:flapping]
+use = circus.plugins.flapping.Flapping
+max_retry = 1
+retry_in = 60
+CIRCUS
+

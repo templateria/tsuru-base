@@ -1,4 +1,4 @@
 #!/bin/bash -l
-
+sudo -E /usr/bin/circusd --daemon /etc/circus/circusd.ini --log-output /var/log/circus.log
 circusctl stop
 circusctl start

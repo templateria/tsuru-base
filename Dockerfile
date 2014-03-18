@@ -1,13 +1,23 @@
 FROM ubuntu:12.04
 RUN mkdir -p /var/lib/tsuru/base
-ADD add-key          /var/lib/tsuru/add-key
-ADD config           /var/lib/tsuru/config
-ADD hooks.py         /var/lib/tsuru/hooks.py
-ADD requirements.txt /var/lib/tsuru/requirements.txt
-ADD so_dependencies  /var/lib/tsuru/so_dependencies
-ADD utils            /var/lib/tsuru/utils
-ADD scripts/deploy  /var/lib/tsuru/base/deploy
+RUN mkdir /var/run/sshd
+
+# required scripts that cannot be removed in derived images
+ADD scripts/hooks.py /var/lib/tsuru/hooks.py
+ADD scripts/add-key  /var/lib/tsuru/add-key
+
+# base scripts that need to be overridden in derived images
 ADD scripts/install /var/lib/tsuru/base/install
-ADD scripts/restart /var/lib/tsuru/base/restart
 ADD scripts/setup   /var/lib/tsuru/base/setup
+
+# base scripts that can be symlinked to or ignored in derived images
+ADD scripts/deploy  /var/lib/tsuru/base/deploy
+ADD scripts/restart /var/lib/tsuru/base/restart
 ADD scripts/start   /var/lib/tsuru/base/start
+
+RUN ln -s /var/lib/tsuru/base/deploy  /var/lib/tsuru/deploy
+RUN ln -s /var/lib/tsuru/base/restart /var/lib/tsuru/restart
+RUN ln -s /var/lib/tsuru/base/start   /var/lib/tsuru/start
+
+RUN /var/lib/tsuru/base/install
+RUN /var/lib/tsuru/base/setup

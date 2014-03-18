@@ -8,23 +8,30 @@ echo " % $0 <git-repository> <git-ref-id> <envs>"
     exit 1
 fi
 
+SOURCE_DIR=/var/lib/tsuru
+
 function do_deploy() {
-    if [ -d $CURRENT_DIR ]; then
-cd $CURRENT_DIR
+    if [ -d /home/application/current ]; then
+        cd /home/application/current
         git reset --hard
         git fetch origin
         cd -
     else
-git clone $1 $CURRENT_DIR
+        git clone $1 /home/application/current
     fi
-cd $CURRENT_DIR
+    cd /home/application/current
     git checkout $2 >/dev/null 2>&1
     cd -
 }
 
-SOURCE_DIR=/var/lib/tsuru
+function so_dependencies() {
+    if [ -f /home/application/current/requirements.apt ]; then
+        sudo -E apt-get install $(cat /home/application/current/requirements.apt) -y
+    else
+        echo "requirements.apt not found."
+        echo "Skipping..."
+    fi
+}
 
-source ${SOURCE_DIR}/config
-source ${SOURCE_DIR}/so_dependencies
 do_deploy $@
 so_dependencies
