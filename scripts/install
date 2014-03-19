@@ -1,6 +1,6 @@
 #!/bin/bash -el
 apt-get update
-apt-get -y install python-software-properties git-core openssh-server python-pip python-yaml python-dev
+apt-get -y install python-software-properties git-core openssh-server python-pip python-yaml
 add-apt-repository -y ppa:roman-imankulov/circus
 apt-get update
 apt-get install -y circus
